@@ -1,0 +1,17 @@
+Computer algorithm:
+1. Easy
+Chooses random free cell
+2. Medium
+Chooses third cell if 2 cells in a row/column/diagonal taken or
+else random cell
+3. Hard
+Chooses center cell first if "X",
+chooses third cell if 2 cells in a row/column/diagonal taken,
+chooses third cell if opponent has 2 cells in a row/column/diagonal
+taken
+4. Master
+Chooses center cell first if "X",
+chooses third cell if 2 cells in a row/column/diagonal taken,
+chooses third cell if opponent has 2 cells in a row/column/diagonal
+taken
+preferably chooses diagonals over columns/rows
