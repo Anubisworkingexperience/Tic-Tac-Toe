@@ -9,13 +9,19 @@ const gameBoard = (function() {
     };
 })();
 
-const playerOne = {
-    score: 0,
+function players() {
+    const playerOne = {
+        victory: false,
+    }
+    
+    const playerTwo = {
+        victory: false,
+    }
+    
+    return {playerOne, playerTwo};
 }
 
-const playerTwo = {
-    score: 0,
-}
+
 
 function game() {
     console.log('Welcome to the game of tic tac toe');
@@ -35,7 +41,7 @@ function game() {
 
     const onePlayerGame = function() {
         console.log("Game started!");
-        while (cellsUsed != 9) {
+        while (!playerOne.victory || !playerTwo.victory) {
             let cell = prompt("Enter row, column of your cell. Format: row column").split(" ");
             let row = Number(cell[0]);
             let column = Number(cell[1]);
@@ -58,6 +64,7 @@ function game() {
 
             if (choosePlayer === "x") {
                 updateBoardArray();
+                winConditionCheck("Player", chooseComputer, players.playerOne);
                 if (currentCellTaken === false) {
                     computerEasyChoice();
                 }
@@ -69,10 +76,40 @@ function game() {
     }
 }
 
-function winCondition() {
-    
+function winConditionCheck(playerTag, opponentValue, playerObject) {
+    if (cellsUsed >= 5) {
+        let mainDiagonal = [board[0][0], board[1][1], board[2][2]];
+        let sideDiagonal = [board[0][2], board[1][1], board[2][0]];
+        let firstColumn = [board[0][0], board[1][0], board[2][0]];
+        let secondColumn = [board[0][1], board[1][1], board[2][1]];
+        let thirdColumn = [board[0][2], board[1][2], board[2][2]];
+        console.log(mainDiagonal, sideDiagonal, firstColumn, secondColumn, thirdColumn);
+
+        for(let i = 0; i < board.length; i++) {
+            if ((!(board[i].includes("#")) &&
+            !(board[i].includes(opponentValue))) ||
+            (!firstColumn.includes("#") && 
+            !firstColumn.includes(opponentValue)) ||
+            (!secondColumn.includes("#") && 
+            !secondColumn.includes(opponentValue)) ||
+            (!thirdColumn.includes("#") &&
+            !thirdColumn.includes(opponentValue)) ||
+            (!mainDiagonal.includes("#") &&
+            !mainDiagonal.includes(opponentValue)) ||
+            (!sideDiagonal.includes("#") &&
+            !sideDiagonal.includes(opponentValue))) {
+                console.log(`${playerTag} has won the game!`)
+                playerObject.victory = true;
+                resetBoard();
+            }
+            
+        }
+    }
 }
 
+function resetBoard() {
+    // board = []
+}
     const computerEasyChoice = function() {
         console.log("some easy computer");
         const randomRow = Math.round(Math.random() * 2);
@@ -81,7 +118,9 @@ function winCondition() {
         console.log(board[randomRow][randomColumn]);
         if (board[randomRow][randomColumn] === "#") {
             board[randomRow][randomColumn] = chooseComputer.toUpperCase();
+            cellsUsed += 1;
             console.log(board);
+            console.log(cellsUsed);
         }
         else {
             computerEasyChoice();
