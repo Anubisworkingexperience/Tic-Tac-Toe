@@ -29,6 +29,9 @@ function game() {
     let chooseDifficulty = prompt('Choose game difficulty. Easy(e), medium(m), hard(h), master(m)');
     let choosePlayer = prompt(`Choose "X" or "O"`).toLowerCase();
     let chooseComputer;
+    let playerOneVictory = players().playerOne.victory;
+    let playerTwoVictory = players().playerTwo.victory;
+
     choosePlayer === "x" ? chooseComputer = "o" :
     chooseComputer = "x";
 
@@ -41,7 +44,7 @@ function game() {
 
     const onePlayerGame = function() {
         console.log("Game started!");
-        while (!playerOne.victory || !playerTwo.victory) {
+        while (!playerOneVictory || !playerTwoVictory) {
             let cell = prompt("Enter row, column of your cell. Format: row column").split(" ");
             let row = Number(cell[0]);
             let column = Number(cell[1]);
@@ -64,26 +67,29 @@ function game() {
 
             if (choosePlayer === "x") {
                 updateBoardArray();
-                winConditionCheck("Player", chooseComputer, players.playerOne);
+                winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
                 if (currentCellTaken === false) {
                     computerEasyChoice();
+                    winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);
                 }
             }
             else {
                 computerEasyChoice();
+                winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);
                 updateBoardArray();
+                winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
             }
     }
 }
 
-function winConditionCheck(playerTag, opponentValue, playerObject) {
+function winConditionCheck(playerTag, opponentValue, playerObjectVictory) {
     if (cellsUsed >= 5) {
         let mainDiagonal = [board[0][0], board[1][1], board[2][2]];
         let sideDiagonal = [board[0][2], board[1][1], board[2][0]];
         let firstColumn = [board[0][0], board[1][0], board[2][0]];
         let secondColumn = [board[0][1], board[1][1], board[2][1]];
         let thirdColumn = [board[0][2], board[1][2], board[2][2]];
-        console.log(mainDiagonal, sideDiagonal, firstColumn, secondColumn, thirdColumn);
+        console.log(board);
 
         for(let i = 0; i < board.length; i++) {
             if ((!(board[i].includes("#")) &&
@@ -99,7 +105,7 @@ function winConditionCheck(playerTag, opponentValue, playerObject) {
             (!sideDiagonal.includes("#") &&
             !sideDiagonal.includes(opponentValue))) {
                 console.log(`${playerTag} has won the game!`)
-                playerObject.victory = true;
+                playerObjectVictory = true;
                 resetBoard();
             }
             
