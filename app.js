@@ -29,6 +29,10 @@ function game() {
     let chooseDifficulty = prompt('Choose game difficulty. Easy(e), medium(m), hard(h), master(m)');
     let choosePlayer = prompt(`Choose "X" or "O"`).toLowerCase();
     let chooseComputer;
+
+    //while playing against computer player one is player
+    //and player two is computer
+    
     let playerOneVictory = players().playerOne.victory;
     let playerTwoVictory = players().playerTwo.victory;
 
@@ -44,7 +48,7 @@ function game() {
 
     const onePlayerGame = function() {
         console.log("Game started!");
-        while (!playerOneVictory || !playerTwoVictory) {
+        while (!playerOneVictory && !playerTwoVictory) {
             let cell = prompt("Enter row, column of your cell. Format: row column").split(" ");
             let row = Number(cell[0]);
             let column = Number(cell[1]);
@@ -67,17 +71,17 @@ function game() {
 
             if (choosePlayer === "x") {
                 updateBoardArray();
-                winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
-                if (currentCellTaken === false) {
+                playerOneVictory = winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
+                if (!currentCellTaken && !playerOneVictory && !playerTwoVictory) {
                     computerEasyChoice();
-                    winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);
+                    playerTwoVictory = winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);  
                 }
             }
             else {
                 computerEasyChoice();
-                winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);
+                playerTwoVictory = winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);
                 updateBoardArray();
-                winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
+                playerOneVictory = winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
             }
     }
 }
@@ -107,10 +111,12 @@ function winConditionCheck(playerTag, opponentValue, playerObjectVictory) {
                 console.log(`${playerTag} has won the game!`)
                 playerObjectVictory = true;
                 resetBoard();
+                break;
             }
             
         }
     }
+    return playerObjectVictory;
 }
 
 function resetBoard() {
