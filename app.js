@@ -32,7 +32,7 @@ function game() {
 
     //while playing against computer player one is player
     //and player two is computer
-    
+
     let playerOneVictory = players().playerOne.victory;
     let playerTwoVictory = players().playerTwo.victory;
 
@@ -48,40 +48,61 @@ function game() {
 
     const onePlayerGame = function() {
         console.log("Game started!");
-        while (!playerOneVictory && !playerTwoVictory) {
+        let currentPlayer = choosePlayer === "x" ? "Player" : "Computer";
+        let opponent = choosePlayer === "x" ? "Computer" : "Player";
+
+        function playerMove() {
+            let userInput = getUserInput();
+            let row = userInput.row;
+            let column = userInput.column;
+            let currentCellTaken = userInput.currentCellTaken;
+    
+            if (!currentCellTaken) {
+                updateBoardArray(row, column);
+                playerOneVictory = winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
+            }
+    
+        }
+    
+        function computerMove() {
+            computerEasyChoice();
+            playerTwoVictory = winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);  
+        }
+    
+        function getUserInput() {
             let cell = prompt("Enter row, column of your cell. Format: row column").split(" ");
             let row = Number(cell[0]);
             let column = Number(cell[1]);
             let currentCellTaken = false;
             console.log(row, column);
-            
-            function updateBoardArray() {
-                if (board[row-1][column-1] === "#") {
-                    board[row-1][column-1] = choosePlayer.toUpperCase();
-                    cellsUsed += 1;
-                    console.log(board);
-                    console.log(cellsUsed);
-                }
-                else {
-                    console.log("Cell is taken already");
-                    currentCellTaken = true;
-                    console.log(board);
-                }
-            }
+            return {cell, row, column, currentCellTaken};
+        }
 
-            if (choosePlayer === "x") {
-                updateBoardArray();
-                playerOneVictory = winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
-                if (!currentCellTaken && !playerOneVictory && !playerTwoVictory) {
-                    computerEasyChoice();
-                    playerTwoVictory = winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);  
-                }
+        function updateBoardArray(row, column) {
+            if (board[row-1][column-1] === "#") {
+                board[row-1][column-1] = choosePlayer.toUpperCase();
+                cellsUsed += 1;
+                console.log(board);
+                console.log(cellsUsed);
             }
             else {
-                computerEasyChoice();
-                playerTwoVictory = winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);
-                updateBoardArray();
-                playerOneVictory = winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
+                console.log("Cell is taken already");
+                currentCellTaken = true;
+                console.log(board);
+            }
+        }
+
+        while (!playerOneVictory && !playerTwoVictory) {
+
+            if (currentPlayer === "Player") {
+                playerMove();
+                currentPlayer = "Computer";
+                opponent = "Player";
+            }
+            else {
+                computerMove();
+                currentPlayer = "Player";
+                opponent = "Computer";
             }
     }
 }
