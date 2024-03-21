@@ -61,13 +61,16 @@ function game() {
                 updateBoardArray(row, column);
                 playerOneVictory = winConditionCheck("Player", chooseComputer.toUpperCase(), playerOneVictory);
             }
-    
+            
         }
     
         function computerMove() {
+            // if (!currentCellTaken) {
             computerEasyChoice();
             playerTwoVictory = winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);  
+            // }
         }
+
     
         function getUserInput() {
             let cell = prompt("Enter row, column of your cell. Format: row column").split(" ");
@@ -108,6 +111,7 @@ function game() {
 }
 
 function winConditionCheck(playerTag, opponentValue, playerObjectVictory) {
+
     if (cellsUsed >= 5) {
         let mainDiagonal = [board[0][0], board[1][1], board[2][2]];
         let sideDiagonal = [board[0][2], board[1][1], board[2][0]];
@@ -131,17 +135,34 @@ function winConditionCheck(playerTag, opponentValue, playerObjectVictory) {
             !sideDiagonal.includes(opponentValue))) {
                 console.log(`${playerTag} has won the game!`)
                 playerObjectVictory = true;
-                resetBoard();
+                let retry = prompt("Do you want to retry? (y), (n)?");
+                switch(retry) {
+                    case "y":
+                        resetBoard();
+                        game();
+                        break;
+                    case "n":
+                        console.log("No retry");
+                }
                 break;
             }
-            
         }
+    }
+    if (cellsUsed === 9 && !playerOneVictory && !playerTwoVictory) {
+        console.log("It's a tie!");
+        resetBoard();
     }
     return playerObjectVictory;
 }
 
 function resetBoard() {
-    // board = []
+    console.log("Board reset");
+
+    gameBoard.board = [['#', '#', '#'],
+            ['#', '#', '#'],
+            ['#', '#', '#']];
+    
+    gameBoard.cellsUsed = 0;
 }
     const computerEasyChoice = function() {
         console.log("some easy computer");
