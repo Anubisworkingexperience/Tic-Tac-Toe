@@ -26,7 +26,7 @@ function players() {
 function game() {
     console.log('Welcome to the game of tic tac toe');
     let chooseMode = prompt(`Choose your game mode. Type "1p" to play against computer and "2p" to play 2 player game on one device`).toLowerCase();
-    let chooseDifficulty = prompt('Choose game difficulty. Easy(e), medium(m), hard(h), master(m)');
+    let chooseDifficulty = prompt('Choose game difficulty. Easy(e), medium(m), hard(h)');
     let choosePlayer = prompt(`Choose "X" or "O"`).toLowerCase();
     let chooseComputer;
 
@@ -65,10 +65,19 @@ function game() {
         }
     
         function computerMove() {
-            // if (!currentCellTaken) {
-            computerEasyChoice();
+            switch(chooseDifficulty) {
+                case "e":
+                    computerEasyChoice();
+                    break;
+                case "m":
+                    computerMediumChoice();
+                    break;
+                case "h":
+                    computerHardChoice();
+                    break;
+            }
+
             playerTwoVictory = winConditionCheck("Computer", choosePlayer.toUpperCase(), playerTwoVictory);  
-            // }
         }
 
     
@@ -110,14 +119,23 @@ function game() {
     }
 }
 
+function getColumnsAndDiagonals() {
+    let mainDiagonal = [board[0][0], board[1][1], board[2][2]];
+    let sideDiagonal = [board[0][2], board[1][1], board[2][0]];
+    let firstColumn = [board[0][0], board[1][0], board[2][0]];
+    let secondColumn = [board[0][1], board[1][1], board[2][1]];
+    let thirdColumn = [board[0][2], board[1][2], board[2][2]];
+    return {mainDiagonal, sideDiagonal, firstColumn,
+    secondColumn, thirdColumn};
+}
 function winConditionCheck(playerTag, opponentValue, playerObjectVictory) {
 
     if (cellsUsed >= 5) {
-        let mainDiagonal = [board[0][0], board[1][1], board[2][2]];
-        let sideDiagonal = [board[0][2], board[1][1], board[2][0]];
-        let firstColumn = [board[0][0], board[1][0], board[2][0]];
-        let secondColumn = [board[0][1], board[1][1], board[2][1]];
-        let thirdColumn = [board[0][2], board[1][2], board[2][2]];
+        let mainDiagonal = getColumnsAndDiagonals().mainDiagonal;
+        let sideDiagonal = getColumnsAndDiagonals().sideDiagonal;
+        let firstColumn = getColumnsAndDiagonals().firstColumn;
+        let secondColumn = getColumnsAndDiagonals().secondColumn;
+        let thirdColumn = getColumnsAndDiagonals().thirdColumn;
         console.log(board);
 
         for(let i = 0; i < board.length; i++) {
@@ -164,6 +182,8 @@ function resetBoard() {
     
     gameBoard.cellsUsed = 0;
 }
+
+
     const computerEasyChoice = function() {
         console.log("some easy computer");
         const randomRow = Math.round(Math.random() * 2);
@@ -179,6 +199,59 @@ function resetBoard() {
         else {
             computerEasyChoice();
         }
+}
+
+    const computerMediumChoice = function() {
+        console.log("some medium computer");
+
+        //choose third cell if two in a row/column/diagonal taken
+        // or else random cell
+
+        let {mainDiagonal, sideDiagonal, firstColumn, secondColumn, thirdColumn} = getColumnsAndDiagonals();
+
+        function checkItemRelevance(item) {
+            let freeCells = item.filter((cell) => cell === "#").length;
+           return freeCells === 1;
+        }
+
+       function updateBoardWithMove(item) {
+        for (let i = 0; i < item.length; i++) {
+            if (item[i] === "#") {
+                item[i] = chooseComputer.toUpperCase();
+                cellsUsed++;
+                console.log(board);
+                console.log(cellsUsed);
+                return;
+            }
+        }
+       }
+
+        if (checkItemRelevance(mainDiagonal)) {
+            updateBoardWithMove(mainDiagonal);
+        }
+        else if (checkItemRelevance(sideDiagonal)) {
+            updateBoardWithMove(sideDiagonal);
+        }
+        else if (checkItemRelevance(firstColumn)) {
+            updateBoardWithMove(firstColumn);
+        }
+        else if (checkItemRelevance(secondColumn)) {
+            updateBoardWithMove(secondColumn);
+        }
+        else if (checkItemRelevance(thirdColumn)) {
+            updateBoardWithMove(thirdColumn);
+        }
+        else {
+            computerEasyChoice();
+        }
+
+        board.forEach((row) => {
+            checkItemRelevance(row) ? updateBoardWithMove(row) : undefined;
+        });
+    }
+
+    const computerHardChoice = function() {
+        console.log("some hard computer");
     }
 
     const twoPlayerGame = function() {
