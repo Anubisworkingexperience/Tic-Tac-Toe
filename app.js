@@ -184,8 +184,11 @@ function resetBoard() {
 }
 
 
-    const computerEasyChoice = function() {
+    const computerEasyChoice = function(logMessage=true) {
+        if (logMessage) {
         console.log("some easy computer");
+        }
+
         const randomRow = Math.round(Math.random() * 2);
         const randomColumn = Math.round(Math.random() * 2);
         console.log(randomRow + 1, randomColumn + 1);
@@ -197,12 +200,14 @@ function resetBoard() {
             console.log(cellsUsed);
         }
         else {
-            computerEasyChoice();
+            computerEasyChoice(false);
         }
 }
 
-    const computerMediumChoice = function() {
-        console.log("some medium computer");
+    const computerMediumChoice = function(logMessage=true) {
+        if (logMessage) {
+            console.log("some medium computer");
+        }
 
         //choose third cell if two in a row/column/diagonal taken
         // or else random cell
@@ -213,7 +218,7 @@ function resetBoard() {
             let freeCells = item.filter((cell) => cell === "#").length;
            return freeCells === 1;
         }
-
+        
        function updateBoardWithMove(item) {
         for (let i = 0; i < item.length; i++) {
             if (item[i] === "#") {
@@ -242,7 +247,7 @@ function resetBoard() {
             updateBoardWithMove(thirdColumn);
         }
         else {
-            computerEasyChoice();
+            computerEasyChoice(false);
         }
 
         board.forEach((row) => {
@@ -252,6 +257,21 @@ function resetBoard() {
 
     const computerHardChoice = function() {
         console.log("some hard computer");
+        console.log(board);
+        console.log(cellsUsed);
+        
+        // Chooses center cell first if "X",
+        // and uses medium computer algorithm
+
+        if (chooseComputer === "x" && cellsUsed === 0) {
+            if (board[1][1] === "#") {
+                board[1][1] = chooseComputer.toUpperCase();
+                console.log("2 2");
+            }
+        }
+        else {
+        computerMediumChoice(false);
+        }
     }
 
     const twoPlayerGame = function() {
