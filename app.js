@@ -26,7 +26,6 @@ function players() {
 function game() {
     console.log('Welcome to the game of tic tac toe');
     let chooseMode = prompt(`Choose your game mode. Type "1p" to play against computer and "2p" to play 2 player game on one device`).toLowerCase();
-    let chooseDifficulty = prompt('Choose game difficulty. Easy(e), medium(m), hard(h)');
     let choosePlayer = prompt(`Choose "X" or "O"`).toLowerCase();
     let chooseComputer;
 
@@ -39,7 +38,7 @@ function game() {
     choosePlayer === "x" ? chooseComputer = "o" :
     chooseComputer = "x";
 
-    console.log(chooseMode, chooseDifficulty, choosePlayer, chooseComputer);
+    console.log(chooseMode, choosePlayer, chooseComputer);
 
     let board = gameBoard.board;
     console.log(board);
@@ -47,6 +46,7 @@ function game() {
     let cellsUsed = gameBoard.cellsUsed;
 
     const onePlayerGame = function() {
+    let chooseDifficulty = prompt('Choose computer difficulty. Easy(e), medium(m), hard(h)');
         console.log("Game started!");
         let currentPlayer = choosePlayer === "x" ? "Player" : "Computer";
         let opponent = choosePlayer === "x" ? "Computer" : "Player";
@@ -153,6 +153,7 @@ function winConditionCheck(playerTag, opponentValue, playerObjectVictory) {
             !sideDiagonal.includes(opponentValue))) {
                 console.log(`${playerTag} has won the game!`)
                 playerObjectVictory = true;
+                //retry game
                 let retry = prompt("Do you want to retry? (y), (n)?");
                 switch(retry) {
                     case "y":
@@ -259,15 +260,13 @@ function resetBoard() {
         console.log("some hard computer");
         console.log(board);
         console.log(cellsUsed);
-        
+
         // Chooses center cell first if "X",
         // and uses medium computer algorithm
 
-        if (chooseComputer === "x" && cellsUsed === 0) {
-            if (board[1][1] === "#") {
-                board[1][1] = chooseComputer.toUpperCase();
-                console.log("2 2");
-            }
+        if (board[1][1] === "#" && cellsUsed === 0) {
+            board[1][1] = chooseComputer.toUpperCase();
+            console.log("2 2");
         }
         else {
         computerMediumChoice(false);
@@ -275,6 +274,64 @@ function resetBoard() {
     }
 
     const twoPlayerGame = function() {
+        let playerOne = choosePlayer;
+        let playerTwo = chooseComputer;
+        console.log(playerOne, playerTwo);
+        let currentCellTaken = false;
+        let currentPlayer = playerOne === "x" ? "Player one" : "Player two";
+        let opponent = currentPlayer === "Player one" ? "Player two" : "Player one";
+        
+        function updateBoard(row, column, playerTag) {
+            if (board[row][column] === "#") {
+                board[row][column] = playerTag;
+                cellsUsed ++;
+                console.log(board);
+                console.log(cellsUsed);
+            }
+            else {
+                console.log("Cell is already taken");
+                currentCellTaken = true;
+                console.log(board);
+                console.log(cellsUsed);
+            }
+        }
+        function firstPlayerMove() {
+            let firstCell = prompt(`Enter row and column of cell for first player (${playerOne.toUpperCase()}). Format: row column`).split(" ");
+            let firstCellRow = firstCell[0];
+            let firstCellColumn = firstCell[1];
+            console.log(firstCellRow, firstCellColumn);
+
+            if (!currentCellTaken) {
+                updateBoard(firstCellRow - 1, firstCellColumn - 1, playerOne.toUpperCase());
+                winConditionCheck("Player one", playerTwo.toUpperCase(), playerOneVictory);
+            }
+        }
+
+        function secondPlayerMove() {
+            let secondCell = prompt(`Enter row and column of cell for second player (${playerTwo.toUpperCase()}). Format: row column`).split(" ");
+            let secondCellRow = secondCell[0];
+            let secondCellColumn = secondCell[1];
+            console.log(secondCellRow, secondCellColumn);
+
+            if (!currentCellTaken) {
+                updateBoard(secondCellRow - 1, secondCellColumn - 1, playerTwo.toUpperCase());
+                winConditionCheck("Player two", playerOne.toUpperCase(), playerTwoVictory);
+            }
+        }
+
+        while (!playerOneVictory && !playerTwoVictory) {
+            if (currentPlayer === "Player one") {
+                firstPlayerMove();
+                currentPlayer = "Player two";
+                opponent = "Player one";
+            }
+           
+            else {
+                secondPlayerMove();
+                currentPlayer = "Player one";
+                opponent = "Player two";
+            }
+        }
 
     }
 
